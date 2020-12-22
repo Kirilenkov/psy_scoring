@@ -80,6 +80,15 @@ def check_date(*messages, check_range=False):
     return date
 
 
+def sex_input():
+    while True:
+        sex = input('Введите пол испытуемого (м/ж):\n')
+        if sex in 'мж':
+            return sex
+        else:
+            print(EOI + 'Вы ввели недопустимое значение: {}'.format(sex))
+
+
 def report():
     full_name = full_name_input()
     dob_mess = ('Введите день и месяц и год рождения испытуемого в формате дд.мм.гггг: \n',
@@ -114,6 +123,7 @@ def visit_input():
 def main():
     primary = report()
     primary['visit'] = str(visit_input())
+    primary['sex'] = str(sex_input())
     return primary
 
 
