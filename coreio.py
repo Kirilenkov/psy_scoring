@@ -2,6 +2,7 @@ import pandas as pd
 # import main_objects
 import openpyxl as ex
 from inputpath import *
+from processing import core
 from participant_input import main
 
 PATH = '/Users/kirill/pr/FFM/psyscoring'
@@ -47,3 +48,5 @@ scales_df = []
 
 for sc in list(scales_chosen.values()):
     scales_df.append(pd.read_excel('Scales.xlsx', engine='openpyxl', sheet_name=sc))
+
+core(scales_df[0])
