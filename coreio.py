@@ -9,13 +9,8 @@ path_setter(PATH)
 
 wb = ex.load_workbook('Scales.xlsx')
 scales_names = wb.sheetnames
-sheets_amount = len(scales_names)
-scales_df = []
 
-for i in range(sheets_amount):
-    scales_df.append(pd.read_excel('Scales.xlsx', engine='openpyxl', sheet_name=i))
-
-scales_names = wb.sheetnames
+scales_dict = {str(i): name for name, i in zip(scales_names, range(1, 100))}
 
 # partic_data_dict = main()
 
@@ -23,34 +18,32 @@ partic_data_dict = {'full_name': 'ВАСИЛЬЕВ ВАСИЛИЙ АЛЕКСЕЕ
                     'filling_date': '22.12.2020', 'visit': '1', 'sex': 'м'}
 
 
-def scales_choice():
+def scales_choice(message, sc_dict):
     while True:
-        print('Выберите опросники по номерам через запятую\n'
-              'либо введите "в", чтобы выбрать все:')
-        counter = 0
-        for s, i in zip(scales_names, range(100)):
-            print(str(i + 1) + '. {}'.format(s))
-            counter += i
-        output = ''
-        for n in range(counter):
-            output += str(counter + 1) + ','
+        # sequence = []
+        print(message)
+        for s in sc_dict.items():
+            print(s[0], ': ', s[1])
         sc = input()
+        output = {}
         if sc == 'в':
-            return output[:-1]
-        # Требуется проверка ввода и обработка исключений
+            output = sc_dict
+            return output
+        for ch in sc:
+            if ch in sc_dict.keys():
+                output[ch] = sc_dict[ch]
+                # sequence.append(ch)
+        if output.__len__() == 0:
+            continue
         else:
-            return sc
+            return output
 
 
-scales_choice()
+mess = 'Выберите опросники по номерам через запятую\n ' \
+       'либо введите "в", чтобы выбрать все:'
+scales_chosen = scales_choice(message=mess, sc_dict=scales_dict)
 
+scales_df = []
 
-
-
-
-
-
-
-
-
-
+for sc in list(scales_chosen.values()):
+    scales_df.append(pd.read_excel('Scales.xlsx', engine='openpyxl', sheet_name=sc))
