@@ -38,5 +38,6 @@ def manual_input(content, band):
 def core(df):
     band = (df.loc[0, 'range_min'], df.loc[0, 'range_max'])
     for i in range(df.__len__()):
-        df[i, 'answer'] = manual_input(df.loc[i, 'qwest'], band)
+        df.loc[i, 'answer'] = manual_input(df.loc[i, 'qwest'], band)
+        print(df)
 
