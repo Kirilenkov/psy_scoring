@@ -20,7 +20,6 @@ class RangeNoMatch(Exception):
 
 def core(df, scale_name):
     clr = Colors()
-    # global counter
     counter = 0
     dfl = df.__len__()
     min_range = int(df.loc[0, 'range_min'])

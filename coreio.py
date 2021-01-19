@@ -19,19 +19,17 @@ mess = 'Выберите опросники по номерам через за�
 
 def scales_choice(message, sc_dict):
     while True:
-        # sequence = []
         print(message)
         for s in sc_dict.items():
             print(s[0], ': ', s[1])
-        sc = input()
+        scl = input()
         output = {}
-        if sc == 'в':
+        if scl == 'в':
             output = sc_dict
             return output
-        for ch in sc:
+        for ch in scl:
             if ch in sc_dict.keys():
                 output[ch] = sc_dict[ch]
-                # sequence.append(ch)
         if output.__len__() == 0:
             continue
         else:
