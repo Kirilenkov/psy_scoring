@@ -1,43 +1,43 @@
-class Colors:
-    def __init__(self):
-        self.HEADER = '\033[95m'
-        self.OKBLUE = '\033[94m'
-        self.OKCYAN = '\033[96m'
-        self.OKGREEN = '\033[92m'
-        self.WARNING = '\033[93m'
-        self.FAIL = '\033[91m'
-        self.BOLD = '\033[1m'
-        self.UNDERLINE = '\033[4m'
-        self.ENDC = '\033[0m'
+import pandas as pd
 
 
-class RangeNoMatch(Exception):
-    pass
+def inverter(min, max, val):
+    seq = [i for i in range(min, max + 1)]
+    i = seq.index(val)
+    seq.reverse()
+    return seq[i]
 
 
-def manual_input(content, band):
-    cl = Colors()
-    min_ans = int(band[0])
-    max_ans = int(band[1])
-    while True:
-        try:
-            answer = int(input(content + '\n'))
-            if answer < min_ans or answer > max_ans:
-                raise RangeNoMatch
-        except ValueError:
-            print(cl.FAIL + 'Ошибка ввода, введите числовое значение' + cl.ENDC)
-            continue
-        except RangeNoMatch:
-            print(cl.FAIL + 'Ошибка ввода, ответ должен быть в диапазоне'
-                            ' [{0}; {1}]'.format(min_ans, max_ans) + cl.ENDC)
-            continue
+def processing(df, mode, subscales=False):
+    weight = 1
+    if mode == 'sum*2':
+        weight = 2
+    scales = dict()
+    df_len = df.__len__()
+    df_output = pd.DataFrame()
+    min_range = int(df.loc[0, 'range_min'])
+    max_range = int(df.loc[0, 'range_max'])
+    for i in range(df_len):
+        if int(df.loc[i, 'score']) > 0:
+            df.loc[i, 'ans_filtered'] = inverter(min=min_range, max=max_range, val=int(df.loc[i, 'answer']))
         else:
-            return answer
+            df.loc[i, 'ans_filtered'] = int(df.loc[i, 'answer'])
+    if subscales:
+        for i in range(df_len):
+            name = df.loc[i, 'subscales']
+            if name in scales:
+                scales[name] = scales[name] + int(df.loc[i, 'ans_filtered'])*weight
+            else:
+                scales[name] = int(df.loc[i, 'ans_filtered'])*weight
+    counter = 0
+    for i in range(df_len):
+        counter += int(df.loc[i, 'ans_filtered'])
+    scales['Общая сумма'] = counter
 
-
-def core(df):
-    band = (df.loc[0, 'range_min'], df.loc[0, 'range_max'])
-    for i in range(df.__len__()):
-        df.loc[i, 'answer'] = manual_input(df.loc[i, 'qwest'], band)
-        print(df)
-
+    for i in scales.keys():
+        df_output.loc[0, i] = scales[i]
+    for i in range(df_len):
+        verbose_report_quest = str(df.loc[i, 'seq']) + ' ' + df.loc[i, 'quest']
+        df_output.loc[0, verbose_report_quest] = df.loc[i, 'answer']
+    print(df_output)
+    return df_output

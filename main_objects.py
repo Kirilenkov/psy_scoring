@@ -1,7 +1,3 @@
-import os
-from datetime import datetime as dt
-
-
 class Participant:
 
     def __init__(self, full_name, dob, filling_date):
@@ -24,4 +20,3 @@ class Scale:
 
 if __name__ == '__main__':
     pass
-

@@ -2,21 +2,19 @@ import pandas as pd
 # import main_objects
 import openpyxl as ex
 from inputpath import *
-from processing import core
-from participant_input import main
+from df_filling import core
+from processing import processing
+from participant_input import participant_data_input
 
 PATH = '/Users/kirill/pr/FFM/psyscoring'
 path_setter(PATH)
 
 wb = ex.load_workbook('Scales.xlsx')
 scales_names = wb.sheetnames
-
 scales_dict = {str(i): name for name, i in zip(scales_names, range(1, 100))}
-
-# partic_data_dict = main()
-
-partic_data_dict = {'full_name': 'ВАСИЛЬЕВ ВАСИЛИЙ АЛЕКСЕЕВИЧ', 'dob': '12.12.1987',
-                    'filling_date': '22.12.2020', 'visit': '1', 'sex': 'м'}
+partic_data_df = pd.DataFrame([participant_data_input()])
+mess = 'Выберите опросники по номерам через запятую\n ' \
+       'либо введите "в", чтобы выбрать все:'
 
 
 def scales_choice(message, sc_dict):
@@ -40,13 +38,22 @@ def scales_choice(message, sc_dict):
             return output
 
 
-mess = 'Выберите опросники по номерам через запятую\n ' \
-       'либо введите "в", чтобы выбрать все:'
 scales_chosen = scales_choice(message=mess, sc_dict=scales_dict)
 
-scales_df = []
+scales_dfs = []
 
 for sc in list(scales_chosen.values()):
-    scales_df.append(pd.read_excel('Scales.xlsx', engine='openpyxl', sheet_name=sc))
+    scales_dfs.append((pd.read_excel('Scales.xlsx', engine='openpyxl', sheet_name=sc), sc))
 
-core(scales_df[0])
+os.chdir('/Users/kirill/Desktop')
+writer = pd.ExcelWriter(partic_data_df.loc[0, 'full_name'] + '.xlsx')
+partic_data_df.to_excel(writer, index=False, sheet_name='Participant')
+for i in range(scales_dfs.__len__()):
+    method = 'sum'
+    if scales_dfs[i][1] == 'DASS':
+        method = 'sum*2'
+    main_data = processing(core(scales_dfs[i][0], scale_name=scales_dfs[i][1]),
+                           subscales=True if 'subscales' in scales_dfs[i][0].columns.values else False,
+                           mode=method)
+    main_data.to_excel(writer, index=False, sheet_name=scales_dfs[i][1])
+writer.save()

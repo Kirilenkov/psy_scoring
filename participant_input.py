@@ -120,7 +120,7 @@ def visit_input():
     return visit
 
 
-def main():
+def participant_data_input():
     primary = report()
     primary['visit'] = str(visit_input())
     primary['sex'] = str(sex_input())
@@ -128,4 +128,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    participant_data_input()

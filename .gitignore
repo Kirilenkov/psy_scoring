@@ -6,4 +6,4 @@ __pycache__
 *.iml
 *.xml
 .DS_Store
-!/keyboard_test.py
+keyboard_test.py
