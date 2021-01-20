@@ -32,7 +32,6 @@ def processing(df, mode, subscales=False):
     counter = 0
     for i in range(df_len):
         counter += int(df.loc[i, 'ans_filtered'])
-    # df_output.loc[0, 'Общая сумма'] = counter
     scales['Общая сумма'] = counter
 
     if subscales:
