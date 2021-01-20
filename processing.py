@@ -8,6 +8,12 @@ def inverter(min, max, val):
     return seq[i]
 
 
+def generator(val):
+    while True:
+        val += 1
+        yield val
+
+
 def processing(df, mode, subscales=False):
     weight = 1
     if mode == 'sum*2':
@@ -22,6 +28,13 @@ def processing(df, mode, subscales=False):
             df.loc[i, 'ans_filtered'] = inverter(min=min_range, max=max_range, val=int(df.loc[i, 'answer']))
         else:
             df.loc[i, 'ans_filtered'] = int(df.loc[i, 'answer'])
+
+    counter = 0
+    for i in range(df_len):
+        counter += int(df.loc[i, 'ans_filtered'])
+    # df_output.loc[0, 'Общая сумма'] = counter
+    scales['Общая сумма'] = counter
+
     if subscales:
         for i in range(df_len):
             name = df.loc[i, 'subscales']
@@ -29,13 +42,16 @@ def processing(df, mode, subscales=False):
                 scales[name] = scales[name] + int(df.loc[i, 'ans_filtered'])*weight
             else:
                 scales[name] = int(df.loc[i, 'ans_filtered'])*weight
-    counter = 0
-    for i in range(df_len):
-        counter += int(df.loc[i, 'ans_filtered'])
-    scales['Общая сумма'] = counter
+    for place_holder in ['Шкала', 'Значение', 'Градация']:
+        df_output[place_holder] = ''
+    gen = generator(0)
+    for sc_name in scales.keys():
+        index = next(gen)
+        value = scales[sc_name]
+        df_output.loc[0, sc_name] = value
+        df_output.loc[index, 'Шкала'] = sc_name
+        df_output.loc[index, 'Значение'] = value
 
-    for i in scales.keys():
-        df_output.loc[0, i] = scales[i]
     for i in range(df_len):
         verbose_report_quest = str(df.loc[i, 'seq']) + ' ' + df.loc[i, 'quest']
         df_output.loc[0, verbose_report_quest] = df.loc[i, 'answer']

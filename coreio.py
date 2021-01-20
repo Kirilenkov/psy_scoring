@@ -12,7 +12,11 @@ path_setter(PATH)
 wb = ex.load_workbook('Scales.xlsx')
 scales_names = wb.sheetnames
 scales_dict = {str(i): name for name, i in zip(scales_names, range(1, 100))}
-partic_data_df = pd.DataFrame([participant_data_input()])
+
+# partic_data_df = pd.DataFrame([participant_data_input()])
+partic_data_dict = {'full_name': 'ВАСИЛЬЕВ ВАСИЛИЙ АЛЕКСЕЕВИЧ', 'dob': '12.12.1987',
+                    'filling_date': '22.12.2020', 'visit': '1', 'sex': 'м'}
+partic_data_df = pd.DataFrame([partic_data_dict])
 mess = 'Выберите опросники по номерам через запятую\n ' \
        'либо введите "в", чтобы выбрать все:'
 
