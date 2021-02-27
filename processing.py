@@ -24,7 +24,7 @@ def processing(df, mode, subscales=False):
     min_range = int(df.loc[0, 'range_min'])
     max_range = int(df.loc[0, 'range_max'])
     for i in range(df_len):
-        if int(df.loc[i, 'score']) > 0:
+        if int(df.loc[i, 'score']) != 0:
             df.loc[i, 'ans_filtered'] = inverter(min=min_range, max=max_range, val=int(df.loc[i, 'answer']))
         else:
             df.loc[i, 'ans_filtered'] = int(df.loc[i, 'answer'])

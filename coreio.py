@@ -40,6 +40,14 @@ def scales_choice(message, sc_dict):
             return output
 
 
+def write_log(partic, results):
+    name = partic['full_name']
+    line = 'visit\t' + partic['visit'] + '\n'
+    line += results.iloc[2:].to_string(index=False, justify='left')
+    with open(name + '.txt', 'a', encoding='utf-8') as f:
+        f.write(line)
+
+
 scales_chosen = scales_choice(message=mess, sc_dict=scales_dict)
 
 scales_dfs = []
@@ -58,4 +66,9 @@ for i in range(scales_dfs.__len__()):
                            subscales=True if 'subscales' in scales_dfs[i][0].columns.values else False,
                            mode=method)
     main_data.to_excel(writer, index=False, sheet_name=scales_dfs[i][1])
+    # if scales_dfs[i][1] == 'MEDI':
+    #    write_log(partic_data_dict, main_data.loc[:, ['Шкала', 'Значение']])
 writer.save()
+
+# main_data = pd.read_excel('example.xlsx', sheet_name='MEDI', engine='openpyxl')
+# write_log(partic_data_dict, main_data.loc[:, ['Шкала', 'Значение']])
