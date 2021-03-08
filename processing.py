@@ -14,6 +14,14 @@ def generator(val):
         yield val
 
 
+def gradation_estimator(band, item):
+    edges_list = band.split('–')
+    if float(edges_list[0]) <= item <= float(edges_list[1]):
+        return True
+    else:
+        return False
+
+
 def processing(df, mode, subscales=False):
     weight = 1
     if mode == 'sum*2':
@@ -30,27 +38,40 @@ def processing(df, mode, subscales=False):
             df.loc[i, 'ans_filtered'] = int(df.loc[i, 'answer'])
 
     counter = 0
+
+    '''counting common sum:'''
     for i in range(df_len):
         counter += int(df.loc[i, 'ans_filtered'])
-    scales['Общая сумма'] = counter
-
+    scales['Общая сумма'] = [counter, 1]
+    '''counting for each scales:'''
     if subscales:
         for i in range(df_len):
             name = df.loc[i, 'subscales']
             if name in scales:
-                scales[name] = scales[name] + int(df.loc[i, 'ans_filtered'])*weight
+                scales[name] = [scales[name][0] + int(df.loc[i, 'ans_filtered'])*weight, scales[name][1] + 1]
             else:
-                scales[name] = int(df.loc[i, 'ans_filtered'])*weight
-    for place_holder in ['Шкала', 'Значение', 'Градация']:
+                scales[name] = [int(df.loc[i, 'ans_filtered'])*weight, 0]
+    for place_holder in ['Шкала', 'Значение', 'Градация', 'color']:
         df_output[place_holder] = ''
     gen = generator(0)
+    count_gradation = int(df['severity'].count())
     for sc_name in scales.keys():
         index = next(gen)
-        value = scales[sc_name]
+        if mode == 'mean':
+            value = scales[sc_name][0]/scales[sc_name][1]
+        else:
+            value = scales[sc_name][0]
         df_output.loc[0, sc_name] = value
         df_output.loc[index, 'Шкала'] = sc_name
         df_output.loc[index, 'Значение'] = value
-
+        if sc_name == 'Общая сумма':
+            continue
+        for i in range(count_gradation):
+            band = df.loc[i, sc_name]
+            print(i, band)
+            if gradation_estimator(band=band, item=value):
+                df_output.loc[index, 'Градация'] = df.loc[i, 'severity']
+                df_output.loc[index, 'color'] = df.loc[i, 'color']
     for i in range(df_len):
         verbose_report_quest = str(df.loc[i, 'seq']) + ' ' + df.loc[i, 'quest']
         df_output.loc[0, verbose_report_quest] = df.loc[i, 'answer']

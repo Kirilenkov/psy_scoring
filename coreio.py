@@ -1,5 +1,6 @@
 import pandas as pd
 # import main_objects
+import xlsxwriter
 import openpyxl as ex
 from inputpath import *
 from df_filling import core
@@ -56,16 +57,33 @@ for sc in list(scales_chosen.values()):
     scales_dfs.append((pd.read_excel('Scales.xlsx', engine='openpyxl', sheet_name=sc), sc))
 
 os.chdir('/Users/kirill/Desktop')
-writer = pd.ExcelWriter(partic_data_df.loc[0, 'full_name'] + '.xlsx')
+writer = pd.ExcelWriter(partic_data_df.loc[0, 'full_name'] + '.xlsx', engine='xlsxwriter')
 partic_data_df.to_excel(writer, index=False, sheet_name='Participant')
 for i in range(scales_dfs.__len__()):
     method = 'sum'
-    if scales_dfs[i][1] == 'DASS':
+    scale = scales_dfs[i][1]
+    if scale == 'DASS':
         method = 'sum*2'
+    elif scale == 'MEDI':
+        method = 'mean'
     main_data = processing(core(scales_dfs[i][0], scale_name=scales_dfs[i][1]),
                            subscales=True if 'subscales' in scales_dfs[i][0].columns.values else False,
                            mode=method)
-    main_data.to_excel(writer, index=False, sheet_name=scales_dfs[i][1])
+    sheet_name = scales_dfs[i][1]
+    color_series = main_data['color']
+    main_data.drop(columns=['color'], inplace=True)
+    main_data.to_excel(writer, index=False, sheet_name=sheet_name)
+    workbook = writer.book
+    worksheet = writer.sheets[sheet_name]
+    for j in range(color_series.__len__()):
+        color_value = color_series.loc[j]
+        if pd.notna(color_value):
+            cell_format = workbook.add_format()
+            cell_format.set_font_name('Times New Roman')
+            cell_format.set_align('left')
+            cell_format.set_font_color(color_value)
+            worksheet.set_row(j + 1, None, cell_format)
+
     # if scales_dfs[i][1] == 'MEDI':
     #    write_log(partic_data_dict, main_data.loc[:, ['Шкала', 'Значение']])
 writer.save()
