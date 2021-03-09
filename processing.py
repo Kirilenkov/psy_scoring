@@ -58,7 +58,7 @@ def processing(df, mode, subscales=False):
     for sc_name in scales.keys():
         index = next(gen)
         if mode == 'mean':
-            value = scales[sc_name][0]/scales[sc_name][1]
+            value = round(scales[sc_name][0]/scales[sc_name][1], 2)
         else:
             value = scales[sc_name][0]
         df_output.loc[0, sc_name] = value
