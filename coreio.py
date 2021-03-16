@@ -40,7 +40,7 @@ def scales_choice(message, sc_dict):
             return output
 
 
-def bars_medi(file_1_visit, file_2_visit, df_2_visit=None):
+def bars_medi(file_1_visit, file_2_visit, title):
     try:
         df1 = pd.read_excel(file_1_visit, engine='openpyxl', sheet_name='MEDI')
         df2 = pd.read_excel(file_2_visit, engine='openpyxl', sheet_name='MEDI')
@@ -53,7 +53,7 @@ def bars_medi(file_1_visit, file_2_visit, df_2_visit=None):
         df2 = df2[['Шкала', 'Значение', 'color']]
         df2.drop([0, 1], inplace=True)
         df2.reset_index(drop=True, inplace=True)
-        bars(visit_1=df1, visit_2=df2)
+        bars(visit_1=df1, visit_2=df2, title=title)
 
 
 scales_chosen = scales_choice(message=mess, sc_dict=scales_dict)
@@ -70,7 +70,7 @@ file_name = partic_data_df.loc[0, 'full_name']
 file = file_name + ' ' + '1' + '.xlsx'
 # df2 = main_data[['Шкала', 'Значение', 'color']]
 file2 = file_name + ' ' + '2' + '.xlsx'
-bars_medi(file_1_visit=file, file_2_visit=file2)
+bars_medi(file_1_visit=file, file_2_visit=file2, title=file_name)
 
 '''
 file_name = partic_data_df.loc[0, 'full_name']
@@ -109,5 +109,4 @@ for i in range(scales_dfs.__len__()):
 writer.save()
 
 # main_data = pd.read_excel('example.xlsx', sheet_name='MEDI', engine='openpyxl')
-# write_log(partic_data_dict, main_data.loc[:, ['Шкала', 'Значение']])
-'''
+# write_log(partic_data_dict, main_data.loc[:, ['Шкала', 'Значение']])'''
