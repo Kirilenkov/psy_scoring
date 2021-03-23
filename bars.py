@@ -4,7 +4,7 @@ from matplotlib.patches import Patch
 from matplotlib.lines import Line2D
 
 
-def bars(visit_1, title, visit_2=None):
+def bars_medi(visit_1, title, visit_2=None):
     print(visit_1)
     print(visit_2)
     labels = []
@@ -83,4 +83,4 @@ def bars(visit_1, title, visit_2=None):
 
 
 if __name__ == '__main__':
-    bars()
+    bars_medi()

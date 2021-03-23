@@ -50,7 +50,7 @@ def processing(df, mode, subscales=False):
             if name in scales:
                 scales[name] = [scales[name][0] + int(df.loc[i, 'ans_filtered'])*weight, scales[name][1] + 1]
             else:
-                scales[name] = [int(df.loc[i, 'ans_filtered'])*weight, 0]
+                scales[name] = [int(df.loc[i, 'ans_filtered'])*weight, 1]
     for place_holder in ['Шкала', 'Значение', 'Градация', 'color']:
         df_output[place_holder] = ''
     gen = generator(0)
@@ -64,7 +64,7 @@ def processing(df, mode, subscales=False):
         df_output.loc[0, sc_name] = value
         df_output.loc[index, 'Шкала'] = sc_name
         df_output.loc[index, 'Значение'] = value
-        if sc_name == 'Общая сумма':
+        if sc_name == 'Общая сумма' and subscales and mode != 'common':
             continue
         for i in range(count_gradation):
             band = df.loc[i, sc_name]

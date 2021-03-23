@@ -32,7 +32,7 @@ def core(df, scale_name):
     while True:
         if counter < 0:
             counter = 0
-        sys.stdout.write(str(df.loc[counter, 'quest']) + ':\n')
+        sys.stdout.write(str(df.loc[counter, 'seq']) + '. ' + str(df.loc[counter, 'quest']) + ':\n')
         key = input().lower()
         if (key == 'q' or key == 'й') and counter != 0:
             counter -= 1
