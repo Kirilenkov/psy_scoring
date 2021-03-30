@@ -68,12 +68,10 @@ def processing(df, mode, subscales=False):
             continue
         for i in range(count_gradation):
             band = df.loc[i, sc_name]
-            print(i, band)
             if gradation_estimator(band=band, item=value):
                 df_output.loc[index, 'Градация'] = df.loc[i, 'severity']
                 df_output.loc[index, 'color'] = df.loc[i, 'color']
     for i in range(df_len):
-        verbose_report_quest = str(df.loc[i, 'seq']) + ' ' + df.loc[i, 'quest']
+        verbose_report_quest = str(df.loc[i, 'seq']) + '. ' + df.loc[i, 'quest']
         df_output.loc[0, verbose_report_quest] = df.loc[i, 'answer']
-    print(df_output)
     return df_output

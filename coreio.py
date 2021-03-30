@@ -64,15 +64,6 @@ for sc in list(scales_chosen.values()):
 
 os.chdir('/Users/kirill/Desktop')
 
-'''-------------TEST BARS--------------------
-file_name = partic_data_df.loc[0, 'full_name']
-file = file_name + ' ' + '1' + '.xlsx'
-# df2 = main_data[['Шкала', 'Значение', 'color']]
-file2 = file_name + ' ' + '2' + '.xlsx'
-bars_medi(file_1_visit=file, file_2_visit=file2, title=file_name)
-
-'''
-
 file_name = partic_data_df.loc[0, 'full_name']
 visit = partic_data_df.loc[0, 'visit']
 writer = pd.ExcelWriter(file_name + ' ' + visit + '.xlsx', engine='xlsxwriter')
@@ -91,6 +82,7 @@ for i in range(scales_dfs.__len__()):
                            mode=method)
     sheet_name = scales_dfs[i][1]
     color_series = main_data['color']
+    main_data.at[1, 'Шкала'] = sheet_name
     # main_data.drop(columns=['color'], inplace=True)
     main_data.to_excel(writer, index=False, sheet_name=sheet_name)
     workbook = writer.book
@@ -102,12 +94,20 @@ for i in range(scales_dfs.__len__()):
             cell_format.set_font_name('Times New Roman')
             cell_format.set_align('left')
             cell_format.set_font_color(color_value)
-            worksheet.set_row(j + 1, None, cell_format)
-    if scales_dfs[i][1] == 'MEDI' and visit == '2':
-        file = file_name + ' ' + '1' + '.xlsx'
-        bars_title = file_name + ' 1 и 2'
-        df2 = main_data[['Шкала', 'Значение', 'color']]
-        bars_medi(visit_1=prepare_df(file), visit_2=prepare_df(df2), title=bars_title)
+            worksheet.conditional_format(j + 1, 1, j + 1, 2, {'type':     'text',
+                                                              'criteria': 'not containing',
+                                                              'value':    'stupid tasks',
+                                                              'format':   cell_format})
+    if sheet_name == 'MEDI':
+        if visit == '2':
+            file = file_name + ' ' + '1' + '.xlsx'
+            bars_title = file_name + ' 1 и 2'
+            df2 = main_data[['Шкала', 'Значение', 'color']]
+            bars_medi(visit_1=prepare_df(file), visit_2=prepare_df(df2), title=bars_title)
+        if visit == '1':
+            bars_title = file_name + ' 1'
+            df1 = main_data[['Шкала', 'Значение', 'color']]
+            bars_medi(visit_1=prepare_df(df1), title=bars_title)
 writer.save()
 
 
