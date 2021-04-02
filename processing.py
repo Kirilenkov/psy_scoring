@@ -71,6 +71,11 @@ def processing(df, mode, subscales=False):
             if gradation_estimator(band=band, item=value):
                 df_output.loc[index, 'Градация'] = df.loc[i, 'severity']
                 df_output.loc[index, 'color'] = df.loc[i, 'color']
+    # only for MEDI scale, clarification required !!!
+    if mode == 'mean':
+        # swap rows (Позитивный темперамент убираем в конец списка)
+        a, b = df_output.iloc[3].copy(), df_output.iloc[10].copy()
+        df_output.iloc[3], df_output.iloc[10] = b, a
     for i in range(df_len):
         verbose_report_quest = str(df.loc[i, 'seq']) + '. ' + df.loc[i, 'quest']
         df_output.loc[0, verbose_report_quest] = df.loc[i, 'answer']

@@ -4,8 +4,6 @@ from matplotlib.patches import Patch
 
 
 def bars_medi(visit_1, title, visit_2=None):
-    print(visit_1)
-    print(visit_2)
     labels = []
     data1 = []
     data2 = []
