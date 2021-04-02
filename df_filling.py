@@ -4,6 +4,7 @@ import sys
 class Colors:
     def __init__(self):
         self.HEADER = '\033[95m'
+        self.BLUE = '\033[34m'
         self.OKBLUE = '\033[94m'
         self.OKCYAN = '\033[96m'
         self.OKGREEN = '\033[92m'
@@ -32,7 +33,8 @@ def core(df, scale_name):
     while True:
         if counter < 0:
             counter = 0
-        sys.stdout.write(str(df.loc[counter, 'quest']) + ':\n')
+        sys.stdout.write(clr.BLUE + str(df.loc[counter, 'seq']) + clr.ENDC +
+                         '. ' + str(df.loc[counter, 'quest']) + ':\n')
         key = input().lower()
         if (key == 'q' or key == 'й') and counter != 0:
             counter -= 1
@@ -52,5 +54,4 @@ def core(df, scale_name):
         else:
             print(clr.FAIL + 'Допустимый диапазон ответов от {0:d}'
                              ' до {1:d}'.format(min_range, max_range) + clr.ENDC)
-    print(df.loc[:, ['seq', 'quest', 'answer']])
     return df
